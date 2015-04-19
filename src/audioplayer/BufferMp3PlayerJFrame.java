@@ -1,0 +1,714 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package audioplayer;
+
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.Timer;
+
+/**
+ *
+ * @author catfly
+ */
+public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
+
+    /**
+     * Creates new form AudioPlayerJFrame
+     */
+    private static final Logger LOGGER = Logger.getLogger(
+                                            BufferMp3PlayerJFrame.class
+                                                                 .getName());
+    
+    private BufferMp3Player player;
+    private AudioFileMetadata meta;
+    
+    private final File initFile;
+    private static boolean bSongIsPlaying = false;
+    private Thread pt;
+    private final Timer timer; // NOTED THAT TIMER SHOULD REALLY BE IN THE AUDIOPLAYER THOUGH
+    private Random r;
+    
+    private int trackLength;
+    private long startedTime;
+    private long savedElaspedTime;
+    
+    private final int albumCoverWidth;
+    private final int albumCoverHeight;
+    
+    private int volume;
+    private int currentIndex;
+    
+    private List<Integer> shuffleList;
+    
+    private List<File> trackList;
+    private List<byte[]> audioBufferList;
+    private List<File> exportList;
+    
+    public BufferMp3PlayerJFrame() {
+        initComponents();
+        
+        player = new BufferMp3Player();
+        meta = new AudioFileMetadata();
+        trackList = new ArrayList();
+        audioBufferList = new ArrayList();
+        exportList = new ArrayList();
+        
+        albumCoverWidth = albumCoverImageJLabel.getWidth();
+        albumCoverHeight = albumCoverImageJLabel.getHeight();
+        
+        initFile = new File("").getAbsoluteFile();
+        
+        // FOR DEBUGGING PURPOSE
+        File[] initFileArray = null;
+        try {
+            initFileArray = FileUtils.toFileArray(initFile);
+        } catch (FileUtils.FileUnrecognisedException ex) {
+            LOGGER.log(Level.SEVERE, "Something wrong with given file : "
+                                     + initFile.getAbsolutePath(), ex);
+        } catch (FileUtils.M3uFileInvalidException ex) {
+            LOGGER.log(Level.SEVERE, "Something wrong with given file : "
+                                     + initFile.getAbsolutePath(), ex);
+        }
+        
+        new Thread(new LoadSongTask(initFileArray)).start();
+        
+        volume = 5;
+        currentIndex = 0;
+        r = new Random();
+        
+        timer = new Timer(1000, new ActionListener(){ 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int elaspedTime = getCurrentTimeInSecond();
+                int leftTime = trackLength - elaspedTime;
+                songJProgressBar.setValue((int) (100.0 * player.getOffset() 
+                                                       / player.getLen()));
+                songTimerJLabel.setText(getTimeFormat(elaspedTime, leftTime));
+            }
+        }); 
+    }
+    
+    private void initMeta(String filename) {
+        meta.setStrFilename(filename);
+        
+        songTitleJLabel.setText(meta.getSongName());
+        artistInfoJLabel.setText(meta.getArtistName() + " -- " 
+                                 + meta.getAlbumName());
+        
+        trackLength = meta.getTrackLength();
+        Image artImg = meta.getAlbumCover();
+        Image resizedImage = artImg.getScaledInstance(albumCoverWidth
+                                                    , albumCoverHeight
+                                                    , Image.SCALE_SMOOTH);
+        albumCoverImageJLabel.setIcon(new ImageIcon(resizedImage));
+        savedElaspedTime = 0;
+    }
+    
+    private void initMeta(File file) {
+        meta.setFile(file);
+        
+        songTitleJLabel.setText(meta.getSongName());
+        artistInfoJLabel.setText(meta.getArtistName() + " -- " 
+                                 + meta.getAlbumName());
+        
+        trackLength = meta.getTrackLength();
+        Image artImg = meta.getAlbumCover();
+        Image resizedImage = artImg.getScaledInstance(albumCoverWidth
+                                                    , albumCoverHeight
+                                                    , Image.SCALE_SMOOTH);
+        albumCoverImageJLabel.setIcon(new ImageIcon(resizedImage));
+        savedElaspedTime = 0;
+    }
+
+    
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jScrollPane1 = new javax.swing.JScrollPane();
+        playList = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        playlistExporterList = new javax.swing.JList();
+        metadataJPanel = new javax.swing.JPanel();
+        songTitleJLabel = new javax.swing.JLabel();
+        artistInfoJLabel = new javax.swing.JLabel();
+        albumCoverImageJLabel = new javax.swing.JLabel();
+        controllerJPanel = new javax.swing.JPanel();
+        playJButton = new javax.swing.JButton();
+        nextJButton = new javax.swing.JButton();
+        previousJButton = new javax.swing.JButton();
+        volumeSlider = new javax.swing.JSlider();
+        repeatJCheckBox = new javax.swing.JCheckBox();
+        shuffleJCheckBox = new javax.swing.JCheckBox();
+        trackManagerJPanel = new javax.swing.JPanel();
+        addToExporterButton = new javax.swing.JButton();
+        removeFromExporterButton = new javax.swing.JButton();
+        importPlaylistButton = new javax.swing.JButton();
+        exportButton = new javax.swing.JButton();
+        progressJPanel = new javax.swing.JPanel();
+        songTimerJLabel = new javax.swing.JLabel();
+        songJProgressBar = new javax.swing.JProgressBar(0,100);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MP3PlayerINW");
+        setResizable(false);
+
+        playList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = new String[0];
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        playList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                playListValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(playList);
+
+        playlistExporterList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = new String[0];
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(playlistExporterList);
+
+        metadataJPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        songTitleJLabel.setText("Unknown Song");
+
+        artistInfoJLabel.setText("Unknown Artist -- Unknown Album");
+
+        javax.swing.GroupLayout metadataJPanelLayout = new javax.swing.GroupLayout(metadataJPanel);
+        metadataJPanel.setLayout(metadataJPanelLayout);
+        metadataJPanelLayout.setHorizontalGroup(
+            metadataJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, metadataJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(albumCoverImageJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(metadataJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(artistInfoJLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                    .addComponent(songTitleJLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        metadataJPanelLayout.setVerticalGroup(
+            metadataJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(metadataJPanelLayout.createSequentialGroup()
+                .addGroup(metadataJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(metadataJPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(albumCoverImageJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(metadataJPanelLayout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(songTitleJLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(artistInfoJLabel)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        playJButton.setText("-|>");
+        playJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playJButtonActionPerformed(evt);
+            }
+        });
+
+        nextJButton.setText("|>|>");
+        nextJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextJButtonActionPerformed(evt);
+            }
+        });
+
+        previousJButton.setText("<|<|");
+        previousJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousJButtonActionPerformed(evt);
+            }
+        });
+
+        volumeSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                volumeSliderStateChanged(evt);
+            }
+        });
+
+        repeatJCheckBox.setText("Repeat");
+
+        shuffleJCheckBox.setText("Shuffle");
+        shuffleJCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                shuffleJCheckBoxStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout controllerJPanelLayout = new javax.swing.GroupLayout(controllerJPanel);
+        controllerJPanel.setLayout(controllerJPanelLayout);
+        controllerJPanelLayout.setHorizontalGroup(
+            controllerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(controllerJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(previousJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(playJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nextJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(volumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(controllerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(shuffleJCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(repeatJCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        controllerJPanelLayout.setVerticalGroup(
+            controllerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controllerJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(controllerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, controllerJPanelLayout.createSequentialGroup()
+                        .addComponent(repeatJCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(shuffleJCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(volumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nextJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(playJButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(previousJButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        addToExporterButton.setText("add");
+        addToExporterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addToExporterButtonActionPerformed(evt);
+            }
+        });
+
+        removeFromExporterButton.setText("remove");
+        removeFromExporterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeFromExporterButtonActionPerformed(evt);
+            }
+        });
+
+        importPlaylistButton.setText("Import");
+        importPlaylistButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importPlaylistButtonActionPerformed(evt);
+            }
+        });
+
+        exportButton.setText("Export");
+        exportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout trackManagerJPanelLayout = new javax.swing.GroupLayout(trackManagerJPanel);
+        trackManagerJPanel.setLayout(trackManagerJPanelLayout);
+        trackManagerJPanelLayout.setHorizontalGroup(
+            trackManagerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(trackManagerJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(addToExporterButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(removeFromExporterButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(importPlaylistButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(exportButton)
+                .addContainerGap())
+        );
+        trackManagerJPanelLayout.setVerticalGroup(
+            trackManagerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(trackManagerJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(trackManagerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addToExporterButton)
+                    .addComponent(removeFromExporterButton)
+                    .addComponent(importPlaylistButton)
+                    .addComponent(exportButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        songTimerJLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        songTimerJLabel.setText("0.00 / -0.00");
+
+        songJProgressBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                songJProgressBarMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout progressJPanelLayout = new javax.swing.GroupLayout(progressJPanel);
+        progressJPanel.setLayout(progressJPanelLayout);
+        progressJPanelLayout.setHorizontalGroup(
+            progressJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(progressJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(songTimerJLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(songJProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        progressJPanelLayout.setVerticalGroup(
+            progressJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(progressJPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(progressJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(songTimerJLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(songJProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(trackManagerJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(metadataJPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(controllerJPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(progressJPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(metadataJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(progressJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(controllerJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(trackManagerJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void playJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playJButtonActionPerformed
+        if (!bSongIsPlaying) {
+            playJButton.setText("||");
+            player.volumnControl(volume);
+            player.playFile();
+            startedTime = System.nanoTime();
+            timer.start();
+        } else {
+            playJButton.setText("-->");
+            player.volumnControl(0);
+            player.pauseFile();
+            savedElaspedTime = savedElaspedTime + System.nanoTime() 
+                                    - startedTime;
+            timer.stop();
+        }
+        bSongIsPlaying = !bSongIsPlaying;
+    }//GEN-LAST:event_playJButtonActionPerformed
+
+    private void volumeSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_volumeSliderStateChanged
+        int v = volumeSlider.getValue();
+        player.volumnControl(v);
+        volume = v;
+    }//GEN-LAST:event_volumeSliderStateChanged
+
+    private void playListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_playListValueChanged
+        currentIndex = playList.getSelectedIndex();
+        if (bSongIsPlaying) {
+            player.pauseFile();
+            player.volumnControl(0);
+            playJButton.setText("-->");
+            bSongIsPlaying = false;
+        }
+        timer.stop();
+        songJProgressBar.setValue(0);
+        savedElaspedTime = 0;
+        initMeta(trackList.get(currentIndex));
+        player.startFile(audioBufferList.get(currentIndex));
+    }//GEN-LAST:event_playListValueChanged
+
+    private void importPlaylistButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importPlaylistButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("").getAbsoluteFile());
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.showOpenDialog(this);
+        File choosenFile = chooser.getSelectedFile();
+        File[] fileArray = null;
+        if (choosenFile.exists()) {
+            try {
+                fileArray = FileUtils.toFileArray(choosenFile);
+                new Thread(new LoadSongTask(fileArray)).start();
+            } catch (FileUtils.FileUnrecognisedException ex) {
+                Logger.getLogger(BufferMp3PlayerJFrame.class.getName())
+                      .log(Level.FINE, "Selected File : " + choosenFile 
+                                         + " is not recognised.", ex);
+            } catch (FileUtils.M3uFileInvalidException ex) {
+                Logger.getLogger(BufferMp3PlayerJFrame.class.getName())
+                      .log(Level.FINE, "m3u file : " + choosenFile
+                                         + " is invalid", ex);
+            } 
+        }
+        
+    }//GEN-LAST:event_importPlaylistButtonActionPerformed
+
+    private void addToExporterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToExporterButtonActionPerformed
+        File f = trackList.get(playList.getSelectedIndex());
+        if (!exportList.contains(f)) {
+            exportList.add(f);
+            playlistExporterList.setListData(exportList.toArray());
+        }
+    }//GEN-LAST:event_addToExporterButtonActionPerformed
+
+    private void removeFromExporterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeFromExporterButtonActionPerformed
+        exportList.remove(playlistExporterList.getSelectedIndex());
+        playlistExporterList.setListData(exportList.toArray());
+    }//GEN-LAST:event_removeFromExporterButtonActionPerformed
+
+    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("").getAbsoluteFile());
+        chooser.showSaveDialog(this);
+        try {
+            FileUtils.exportToM3U(exportList, chooser.getSelectedFile());
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        } catch (FileUtils.M3uFileInvalidException ex) {
+            LOGGER.log(Level.SEVERE, "m3u file is invalid.", ex);
+        }
+    }//GEN-LAST:event_exportButtonActionPerformed
+
+    private void songJProgressBarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_songJProgressBarMouseClicked
+        int barOffset = songJProgressBar.getValue();
+        int barValue = (int) Math.round(evt.getPoint().getX() / songJProgressBar.getWidth() * 100);
+        player.pauseFile();
+        timer.stop();
+        int diff = barValue - barOffset;
+        long diffTime = (long) (1000000000.0 * trackLength * diff / 100);
+        savedElaspedTime += diffTime;
+        player.setOffset(barValue);
+        songJProgressBar.setValue(barValue);
+        if(bSongIsPlaying) {
+            player.playFile();
+            timer.start();
+        }
+    }//GEN-LAST:event_songJProgressBarMouseClicked
+
+    private void nextJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextJButtonActionPerformed
+        if(repeatJCheckBox.isSelected()) {
+            // Do nothing
+        } else if (shuffleJCheckBox.isSelected()) {
+            shuffleList.add(new Integer(currentIndex));
+            shuffleList.remove(0);
+            currentIndex = shuffleList.get(0);
+        } else if(currentIndex == trackList.size()-1) {
+            currentIndex = 0;
+        } else {
+            currentIndex += 1;
+        }
+        songJProgressBar.setValue(0);
+        savedElaspedTime = 0;
+        if (bSongIsPlaying) {
+            startedTime = System.nanoTime();
+        }
+        initMeta(trackList.get(currentIndex));
+        songTimerJLabel.setText(getTimeFormat(0, trackLength));
+        player.startFile(audioBufferList.get(currentIndex));
+    }//GEN-LAST:event_nextJButtonActionPerformed
+
+    private void previousJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousJButtonActionPerformed
+        if(repeatJCheckBox.isSelected()) {
+            // Do nothing
+        } else if (shuffleJCheckBox.isSelected()) {
+            Integer lastIndex = shuffleList.get(shuffleList.size()-1);
+            for(int i = shuffleList.size()-2; i >= 0; i--) {
+                shuffleList.set(i+1, shuffleList.get(i));
+            }
+            shuffleList.set(0, lastIndex);
+            currentIndex = shuffleList.get(0);
+        } else if(currentIndex == 0) {
+            currentIndex = trackList.size()-1;
+        } else {
+            currentIndex -= 1;
+        }
+        songJProgressBar.setValue(0);
+        savedElaspedTime = 0;
+        if (bSongIsPlaying) {
+            startedTime = System.nanoTime();
+        }
+        initMeta(trackList.get(currentIndex));
+        songTimerJLabel.setText(getTimeFormat(0, trackLength));
+        player.startFile(audioBufferList.get(currentIndex));
+    }//GEN-LAST:event_previousJButtonActionPerformed
+
+    private void shuffleJCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_shuffleJCheckBoxStateChanged
+        if(shuffleJCheckBox.isSelected()) {
+            shuffleList = new ArrayList();
+            int trackNum = trackList.size();
+            shuffleList.add(new Integer(currentIndex));
+            for (int i = 0; i < trackNum; i++) {
+                Integer num = new Integer(i);
+                if(!shuffleList.contains(num)) {
+                    shuffleList.add(num);
+                }
+            }
+            
+            //Shuffling
+            for (int i = 0; i < trackNum * 4; i++) {  // 4 ROUND OF SHUFFLING
+                int index = r.nextInt(trackNum-1)+1;  // IGNORE FIRST PLACE
+                shuffleList.add(shuffleList.get(index));
+                shuffleList.remove(index);
+            }
+        }
+    }//GEN-LAST:event_shuffleJCheckBoxStateChanged
+
+    public long getCurrentTime() {
+        return (savedElaspedTime + System.nanoTime() - startedTime);
+    }
+    
+    public int getCurrentTimeInSecond() {
+        return (int) (getCurrentTime()/1000000000);
+    }
+    
+    public static String getTimeFormat(int elaspedTime, int leftTime) {
+        String elaspedTimeFormat = String.format("%d:%02d", (elaspedTime / 60)
+                                            , (elaspedTime % 60));
+        String leftTimeFormat = String.format("%d:%02d", (leftTime / 60)
+                                            , (leftTime % 60));
+        return elaspedTimeFormat + " / -" + leftTimeFormat;
+    }
+        
+    
+    public Timer getTimer() {
+        return timer;
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(BufferMp3PlayerJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(BufferMp3PlayerJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(BufferMp3PlayerJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(BufferMp3PlayerJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new BufferMp3PlayerJFrame().setVisible(true);
+            }
+        });
+    }
+    
+    private class LoadSongTask implements Runnable {
+
+        private final File[] fileArray;
+        
+        public LoadSongTask(File[] fileArray) {
+            this.fileArray = fileArray;
+        }
+
+        @Override
+        public void run() {
+            for (File f : fileArray) {
+                String fName = f.getName();
+                String[] fNameSplitted = fName.split("\\.", 0);
+                String ext = fNameSplitted[fNameSplitted.length-1];
+                if(f.isFile() && !trackList.contains(f) && ext.equals("mp3")){
+
+                    try {
+                        audioBufferList.add(player.initAudio(f));
+                    } catch (IOException ex) {
+                        LOGGER.getLogger(BufferMp3PlayerJFrame.class.getName())
+                              .log(Level.SEVERE, null, ex);
+                    } catch (UnsupportedAudioFileException ex) {
+                        LOGGER.log(Level.SEVERE, null, ex);
+                    }
+                    
+                    trackList.add(f);
+                    System.out.println(f);
+                    playList.setListData(trackList.toArray());
+                }
+            }
+        }
+        
+        
+    }
+    
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addToExporterButton;
+    private javax.swing.JLabel albumCoverImageJLabel;
+    private javax.swing.JLabel artistInfoJLabel;
+    private javax.swing.JPanel controllerJPanel;
+    private javax.swing.JButton exportButton;
+    private javax.swing.JButton importPlaylistButton;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel metadataJPanel;
+    private javax.swing.JButton nextJButton;
+    private javax.swing.JButton playJButton;
+    private javax.swing.JList playList;
+    private javax.swing.JList playlistExporterList;
+    private javax.swing.JButton previousJButton;
+    private javax.swing.JPanel progressJPanel;
+    private javax.swing.JButton removeFromExporterButton;
+    private javax.swing.JCheckBox repeatJCheckBox;
+    private javax.swing.JCheckBox shuffleJCheckBox;
+    private javax.swing.JProgressBar songJProgressBar;
+    private javax.swing.JLabel songTimerJLabel;
+    private javax.swing.JLabel songTitleJLabel;
+    private javax.swing.JPanel trackManagerJPanel;
+    private javax.swing.JSlider volumeSlider;
+    // End of variables declaration//GEN-END:variables
+}

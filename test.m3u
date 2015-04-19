@@ -1,0 +1,7 @@
+#EXTM3U
+
+#EXTINF:TAYLOR SWIFT IS AWESOME
+file:///Users/catfly/NetBeansProjects/AudioPlayer/./awesometaylorswift.mp3
+
+#EXTINF:THIS SONG IS REALLY GREAT TOO
+file:///Users/catfly/NetBeansProjects/AudioPlayer/./reallygreatsong.mp3
