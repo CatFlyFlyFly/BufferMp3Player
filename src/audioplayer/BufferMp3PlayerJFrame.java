@@ -147,7 +147,7 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        playList = new javax.swing.JList();
+        playJList = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
         playlistExporterList = new javax.swing.JList();
         metadataJPanel = new javax.swing.JPanel();
@@ -158,14 +158,14 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
         playJButton = new javax.swing.JButton();
         nextJButton = new javax.swing.JButton();
         previousJButton = new javax.swing.JButton();
-        volumeSlider = new javax.swing.JSlider();
+        volumeJSlider = new javax.swing.JSlider();
         repeatJCheckBox = new javax.swing.JCheckBox();
         shuffleJCheckBox = new javax.swing.JCheckBox();
         trackManagerJPanel = new javax.swing.JPanel();
-        addToExporterButton = new javax.swing.JButton();
-        removeFromExporterButton = new javax.swing.JButton();
-        importPlaylistButton = new javax.swing.JButton();
-        exportButton = new javax.swing.JButton();
+        addToExporterJButton = new javax.swing.JButton();
+        removeFromExporterJButton = new javax.swing.JButton();
+        importPlaylistJButton = new javax.swing.JButton();
+        exportJButton = new javax.swing.JButton();
         progressJPanel = new javax.swing.JPanel();
         songTimerJLabel = new javax.swing.JLabel();
         songJProgressBar = new javax.swing.JProgressBar(0,100);
@@ -174,17 +174,17 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
         setTitle("MP3PlayerINW");
         setResizable(false);
 
-        playList.setModel(new javax.swing.AbstractListModel() {
+        playJList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = new String[0];
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        playList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        playJList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                playListValueChanged(evt);
+                playJListValueChanged(evt);
             }
         });
-        jScrollPane1.setViewportView(playList);
+        jScrollPane1.setViewportView(playJList);
 
         playlistExporterList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = new String[0];
@@ -248,9 +248,9 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
             }
         });
 
-        volumeSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+        volumeJSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                volumeSliderStateChanged(evt);
+                volumeJSliderStateChanged(evt);
             }
         });
 
@@ -275,7 +275,7 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nextJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(volumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                .addComponent(volumeJSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(controllerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(shuffleJCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -291,38 +291,38 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
                         .addComponent(repeatJCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(shuffleJCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(volumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(volumeJSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nextJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(playJButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(previousJButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        addToExporterButton.setText("add");
-        addToExporterButton.addActionListener(new java.awt.event.ActionListener() {
+        addToExporterJButton.setText("add");
+        addToExporterJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addToExporterButtonActionPerformed(evt);
+                addToExporterJButtonActionPerformed(evt);
             }
         });
 
-        removeFromExporterButton.setText("remove");
-        removeFromExporterButton.addActionListener(new java.awt.event.ActionListener() {
+        removeFromExporterJButton.setText("remove");
+        removeFromExporterJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeFromExporterButtonActionPerformed(evt);
+                removeFromExporterJButtonActionPerformed(evt);
             }
         });
 
-        importPlaylistButton.setText("Import");
-        importPlaylistButton.addActionListener(new java.awt.event.ActionListener() {
+        importPlaylistJButton.setText("Import");
+        importPlaylistJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importPlaylistButtonActionPerformed(evt);
+                importPlaylistJButtonActionPerformed(evt);
             }
         });
 
-        exportButton.setText("Export");
-        exportButton.addActionListener(new java.awt.event.ActionListener() {
+        exportJButton.setText("Export");
+        exportJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exportButtonActionPerformed(evt);
+                exportJButtonActionPerformed(evt);
             }
         });
 
@@ -332,13 +332,13 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
             trackManagerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(trackManagerJPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(addToExporterButton)
+                .addComponent(addToExporterJButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(removeFromExporterButton)
+                .addComponent(removeFromExporterJButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(importPlaylistButton)
+                .addComponent(importPlaylistJButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(exportButton)
+                .addComponent(exportJButton)
                 .addContainerGap())
         );
         trackManagerJPanelLayout.setVerticalGroup(
@@ -346,10 +346,10 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
             .addGroup(trackManagerJPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(trackManagerJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addToExporterButton)
-                    .addComponent(removeFromExporterButton)
-                    .addComponent(importPlaylistButton)
-                    .addComponent(exportButton))
+                    .addComponent(addToExporterJButton)
+                    .addComponent(removeFromExporterJButton)
+                    .addComponent(importPlaylistJButton)
+                    .addComponent(exportJButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -440,14 +440,14 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
         bSongIsPlaying = !bSongIsPlaying;
     }//GEN-LAST:event_playJButtonActionPerformed
 
-    private void volumeSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_volumeSliderStateChanged
-        int v = volumeSlider.getValue();
+    private void volumeJSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_volumeJSliderStateChanged
+        int v = volumeJSlider.getValue();
         player.volumnControl(v);
         volume = v;
-    }//GEN-LAST:event_volumeSliderStateChanged
+    }//GEN-LAST:event_volumeJSliderStateChanged
 
-    private void playListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_playListValueChanged
-        currentIndex = playList.getSelectedIndex();
+    private void playJListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_playJListValueChanged
+        currentIndex = playJList.getSelectedIndex();
         if (bSongIsPlaying) {
             player.pauseFile();
             player.volumnControl(0);
@@ -459,9 +459,9 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
         savedElaspedTime = 0;
         initMeta(trackList.get(currentIndex));
         player.startFile(audioBufferList.get(currentIndex));
-    }//GEN-LAST:event_playListValueChanged
+    }//GEN-LAST:event_playJListValueChanged
 
-    private void importPlaylistButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importPlaylistButtonActionPerformed
+    private void importPlaylistJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importPlaylistJButtonActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("").getAbsoluteFile());
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -483,22 +483,22 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
             } 
         }
         
-    }//GEN-LAST:event_importPlaylistButtonActionPerformed
+    }//GEN-LAST:event_importPlaylistJButtonActionPerformed
 
-    private void addToExporterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToExporterButtonActionPerformed
-        File f = trackList.get(playList.getSelectedIndex());
+    private void addToExporterJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToExporterJButtonActionPerformed
+        File f = trackList.get(playJList.getSelectedIndex());
         if (!exportList.contains(f)) {
             exportList.add(f);
             playlistExporterList.setListData(exportList.toArray());
         }
-    }//GEN-LAST:event_addToExporterButtonActionPerformed
+    }//GEN-LAST:event_addToExporterJButtonActionPerformed
 
-    private void removeFromExporterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeFromExporterButtonActionPerformed
+    private void removeFromExporterJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeFromExporterJButtonActionPerformed
         exportList.remove(playlistExporterList.getSelectedIndex());
         playlistExporterList.setListData(exportList.toArray());
-    }//GEN-LAST:event_removeFromExporterButtonActionPerformed
+    }//GEN-LAST:event_removeFromExporterJButtonActionPerformed
 
-    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+    private void exportJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportJButtonActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("").getAbsoluteFile());
         chooser.showSaveDialog(this);
@@ -509,7 +509,7 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
         } catch (FileUtils.M3uFileInvalidException ex) {
             LOGGER.log(Level.SEVERE, "m3u file is invalid.", ex);
         }
-    }//GEN-LAST:event_exportButtonActionPerformed
+    }//GEN-LAST:event_exportJButtonActionPerformed
 
     private void songJProgressBarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_songJProgressBarMouseClicked
         int barOffset = songJProgressBar.getValue();
@@ -678,7 +678,7 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
                     
                     trackList.add(f);
                     System.out.println(f);
-                    playList.setListData(trackList.toArray());
+                    playJList.setListData(trackList.toArray());
                 }
             }
         }
@@ -687,28 +687,28 @@ public class BufferMp3PlayerJFrame extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addToExporterButton;
+    private javax.swing.JButton addToExporterJButton;
     private javax.swing.JLabel albumCoverImageJLabel;
     private javax.swing.JLabel artistInfoJLabel;
     private javax.swing.JPanel controllerJPanel;
-    private javax.swing.JButton exportButton;
-    private javax.swing.JButton importPlaylistButton;
+    private javax.swing.JButton exportJButton;
+    private javax.swing.JButton importPlaylistJButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel metadataJPanel;
     private javax.swing.JButton nextJButton;
     private javax.swing.JButton playJButton;
-    private javax.swing.JList playList;
+    private javax.swing.JList playJList;
     private javax.swing.JList playlistExporterList;
     private javax.swing.JButton previousJButton;
     private javax.swing.JPanel progressJPanel;
-    private javax.swing.JButton removeFromExporterButton;
+    private javax.swing.JButton removeFromExporterJButton;
     private javax.swing.JCheckBox repeatJCheckBox;
     private javax.swing.JCheckBox shuffleJCheckBox;
     private javax.swing.JProgressBar songJProgressBar;
     private javax.swing.JLabel songTimerJLabel;
     private javax.swing.JLabel songTitleJLabel;
     private javax.swing.JPanel trackManagerJPanel;
-    private javax.swing.JSlider volumeSlider;
+    private javax.swing.JSlider volumeJSlider;
     // End of variables declaration//GEN-END:variables
 }

@@ -72,14 +72,14 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JList" name="playList">
+        <Component class="javax.swing.JList" name="playJList">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="new javax.swing.AbstractListModel() {&#xa;    String[] strings = new String[0];&#xa;    public int getSize() { return strings.length; }&#xa;    public Object getElementAt(int i) { return strings[i]; }&#xa;}" type="code"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="playListValueChanged"/>
+            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="playJListValueChanged"/>
           </Events>
         </Component>
       </SubComponents>
@@ -172,7 +172,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="nextJButton" min="-2" pref="60" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="volumeSlider" pref="347" max="32767" attributes="0"/>
+                  <Component id="volumeJSlider" pref="347" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="shuffleJCheckBox" max="32767" attributes="0"/>
@@ -192,7 +192,7 @@
                           <EmptySpace type="unrelated" max="32767" attributes="0"/>
                           <Component id="shuffleJCheckBox" min="-2" pref="17" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="volumeSlider" alignment="1" max="32767" attributes="0"/>
+                      <Component id="volumeJSlider" alignment="1" max="32767" attributes="0"/>
                       <Component id="nextJButton" alignment="1" max="32767" attributes="0"/>
                       <Component id="playJButton" alignment="0" max="32767" attributes="0"/>
                       <Component id="previousJButton" alignment="0" max="32767" attributes="0"/>
@@ -227,9 +227,9 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="previousJButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JSlider" name="volumeSlider">
+        <Component class="javax.swing.JSlider" name="volumeJSlider">
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="volumeSliderStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="volumeJSliderStateChanged"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="repeatJCheckBox">
@@ -254,13 +254,13 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="addToExporterButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="addToExporterJButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="removeFromExporterButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="removeFromExporterJButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="importPlaylistButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="importPlaylistJButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="exportButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="exportJButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -270,10 +270,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="addToExporterButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="removeFromExporterButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="importPlaylistButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="exportButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="addToExporterJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="removeFromExporterJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="importPlaylistJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="exportJButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -281,36 +281,36 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="addToExporterButton">
+        <Component class="javax.swing.JButton" name="addToExporterJButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="add"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addToExporterButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addToExporterJButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="removeFromExporterButton">
+        <Component class="javax.swing.JButton" name="removeFromExporterJButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="remove"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeFromExporterButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeFromExporterJButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="importPlaylistButton">
+        <Component class="javax.swing.JButton" name="importPlaylistJButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Import"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importPlaylistButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importPlaylistJButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="exportButton">
+        <Component class="javax.swing.JButton" name="exportJButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Export"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportJButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
